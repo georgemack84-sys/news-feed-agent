@@ -1,0 +1,2 @@
+ALTER TABLE "Preference" ADD COLUMN "useRemoteRss" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "Preference" ADD COLUMN "useOpenAiSummaries" BOOLEAN NOT NULL DEFAULT false;

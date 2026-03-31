@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: news-feed-agent-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: news_feed_agent
+      POSTGRES_USER: readar
+      POSTGRES_PASSWORD: readar
+    ports:
+      - "5432:5432"
+    volumes:
+      - news-feed-agent-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U readar -d news_feed_agent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  news-feed-agent-postgres:

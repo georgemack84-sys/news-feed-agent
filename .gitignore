@@ -1,0 +1,8 @@
+.next
+node_modules
+prisma/dev.db
+prisma/dev.db-journal
+.env
+*.log
+refresh.out.log
+refresh.err.log

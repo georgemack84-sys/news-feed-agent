@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../lib/generated/postgres"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Article {
+  id                 String           @id @default(cuid())
+  userId             String
+  lastIngestionRunId String?
+  sourceName         String
+  sourceUrl          String
+  title              String
+  url                String
+  canonicalUrl       String?
+  publishedAt        DateTime?
+  fetchedAt          DateTime         @default(now())
+  author             String?
+  summary            String?
+  contentSnippet     String?
+  imageUrl           String?
+  topicCandidates    String
+  hashTitle          String
+  hashContent        String
+  rankingScore       Float            @default(0)
+  changeStatus       String           @default("new")
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastIngestionRun   IngestionRun?    @relation("RunArticles", fields: [lastIngestionRunId], references: [id], onDelete: SetNull)
+  clusterLinks       ClusterArticle[]
+
+  @@unique([userId, url])
+  @@index([canonicalUrl])
+  @@index([publishedAt])
+  @@index([hashTitle])
+  @@index([hashContent])
+  @@index([userId])
+  @@index([lastIngestionRunId])
+}
+
+model Cluster {
+  id                  String           @id @default(cuid())
+  userId              String
+  lastIngestionRunId  String?
+  key                 String
+  contentFingerprint  String?
+  headline            String?
+  summary             String?
+  whyItMatters        String?
+  whyRelevant         String?
+  summarySource       String           @default("rule")
+  summaryModel        String?
+  tags                String
+  representativeTitle String?
+  representativeUrl   String?
+  score               Float            @default(0)
+  sourceWeight        Float            @default(0.5)
+  novelty             Float            @default(0.5)
+  freshness           Float            @default(0.5)
+  topicRelevance      Float            @default(0.5)
+  changeStatus        String           @default("new")
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastIngestionRun    IngestionRun?    @relation("RunClusters", fields: [lastIngestionRunId], references: [id], onDelete: SetNull)
+  articles            ClusterArticle[]
+
+  @@unique([userId, key])
+  @@index([userId])
+  @@index([lastIngestionRunId])
+}
+
+model ClusterArticle {
+  clusterId String
+  articleId String
+  position  Int     @default(0)
+  cluster   Cluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([clusterId, articleId])
+}
+
+model Preference {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  topics             String
+  mutedTopics        String
+  tone               String   @default("brief")
+  useRemoteRss       Boolean  @default(true)
+  useOpenAiSummaries Boolean  @default(false)
+  sourceWeights      String
+  rankingWeights     String
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FeedSnapshot {
+  id         String   @id @default(cuid())
+  userId     String
+  snapshotAt DateTime @default(now())
+  clusterIds String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  articleId String?
+  clusterId String?
+  metadata  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String         @id @default(cuid())
+  username      String         @unique
+  displayName   String
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  articles      Article[]
+  clusters      Cluster[]
+  preference    Preference?
+  snapshots     FeedSnapshot[]
+  ingestionRuns IngestionRun[]
+  interactions  Interaction[]
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model IngestionRun {
+  id            String        @id @default(cuid())
+  userId        String
+  status        String        @default("running")
+  mode          String
+  articleCount  Int           @default(0)
+  dedupedCount  Int           @default(0)
+  clusterCount  Int           @default(0)
+  clusterState  String        @default("{}")
+  startedAt     DateTime      @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  articles      Article[]     @relation("RunArticles")
+  clusters      Cluster[]     @relation("RunClusters")
+  sourceFetches SourceFetch[]
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model SourceFetch {
+  id             String       @id @default(cuid())
+  ingestionRunId String
+  sourceName     String
+  sourceUrl      String
+  mode           String
+  status         String
+  articleCount   Int          @default(0)
+  latencyMs      Int
+  errorMessage   String?
+  createdAt      DateTime     @default(now())
+  ingestionRun   IngestionRun @relation(fields: [ingestionRunId], references: [id], onDelete: Cascade)
+
+  @@index([ingestionRunId])
+  @@index([sourceName, createdAt])
+}
