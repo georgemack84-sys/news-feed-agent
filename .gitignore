@@ -6,3 +6,6 @@ prisma/dev.db-journal
 *.log
 refresh.out.log
 refresh.err.log
+gh_*.msi
+gh_*.zip
+tools/
