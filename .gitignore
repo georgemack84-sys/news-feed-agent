@@ -3,6 +3,10 @@ node_modules
 prisma/dev.db
 prisma/dev.db-journal
 .env
+.env.sqlite.backup
 *.log
 refresh.out.log
 refresh.err.log
+gh_*.msi
+gh_*.zip
+tools/

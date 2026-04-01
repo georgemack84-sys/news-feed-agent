@@ -3,7 +3,8 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { hashSecret, prisma } from "@/lib/db/queries";
+import { prisma } from "@/lib/db/client";
+import { hashSecret } from "@/lib/db/queries";
 
 const SESSION_COOKIE = "news-feed-agent-session";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 14;

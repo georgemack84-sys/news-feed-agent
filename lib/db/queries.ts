@@ -1,25 +1,10 @@
 import crypto from "node:crypto";
 
-import { PrismaClient } from "@prisma/client";
-
+import { prisma } from "@/lib/db/client";
 import { defaultPreferences } from "@/lib/db/schema";
 import { getDeploymentReadiness } from "@/lib/deployment";
 import { computeNextRefreshAt, getRefreshIntervalMinutes, getRunLockWindowMinutes, getStaleRunMinutes } from "@/lib/scheduler";
 import type { FeedResponse, OperationalStatus, PreferenceInput, RunStatus, SourceHealth } from "@/lib/types";
-
-declare global {
-  var prismaGlobal: PrismaClient | undefined;
-}
-
-export const prisma =
-  globalThis.prismaGlobal ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.prismaGlobal = prisma;
-}
 
 const parseJson = <T>(value: string, fallback: T): T => {
   try {

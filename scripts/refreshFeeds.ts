@@ -1,6 +1,7 @@
 import "dotenv/config";
 
-import { ensureDefaultUser, prisma } from "@/lib/db/queries";
+import { prisma } from "@/lib/db/client";
+import { ensureDefaultUser } from "@/lib/db/queries";
 import { logError, logEvent } from "@/lib/observability";
 import { refreshFeedPipeline } from "@/lib/pipeline";
 

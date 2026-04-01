@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { getAuthenticatedUser } from "@/lib/auth";
-import { prisma } from "@/lib/db/queries";
+import { prisma } from "@/lib/db/client";
 
 export async function POST(request: NextRequest) {
   const user = await getAuthenticatedUser();
