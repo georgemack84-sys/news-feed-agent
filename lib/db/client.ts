@@ -16,7 +16,7 @@ function isPostgresUrl(url: string | undefined) {
 }
 
 function loadPostgresClient(): PrismaClientConstructor {
-  const moduleName = ["..", "generated", "postgres"].join("/");
+  const moduleName = "../generated/postgres";
 
   return runtimeRequire(moduleName).PrismaClient as PrismaClientConstructor;
 }
