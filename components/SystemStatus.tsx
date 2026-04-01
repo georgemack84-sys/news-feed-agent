@@ -23,9 +23,12 @@ export function SystemStatus({
   const aiLabel = useOpenAiSummaries ? "OpenAI on" : "Fallback summaries";
 
   return (
-    <section className="rounded-[28px] border border-[color:var(--border)] bg-[color:var(--panel)] p-6 shadow-[0_24px_80px_rgba(82,57,23,0.08)]">
+    <section className="surface-glow rounded-[30px] border border-[color:var(--border)] bg-[color:var(--panel)] p-6 shadow-[var(--shadow)]">
       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--accent)]">Agent status</p>
       <h2 className="mt-3 text-2xl font-semibold">System overview</h2>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-[color:var(--ink-soft)]">
+        A quick read on ingestion health, summary mode, and whether the next refresh is on track.
+      </p>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl bg-white/80 p-4">
@@ -117,6 +120,12 @@ export function SystemStatus({
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-stone-900">{source.sourceName}</p>
                     <p className="text-xs uppercase tracking-[0.16em] text-stone-500">{source.lastStatus}</p>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-stone-200">
+                    <div
+                      className="h-full rounded-full bg-[color:var(--accent)]"
+                      style={{ width: `${Math.max(8, source.successRate * 100)}%` }}
+                    />
                   </div>
                   <p className="mt-2 text-xs text-stone-600">
                     {(source.successRate * 100).toFixed(0)}% healthy • avg {source.averageLatencyMs}ms

@@ -98,13 +98,16 @@ export function Sidebar({ preferences, openAiKeyAvailable = false, variant = "co
   return (
     <aside
       className={`rounded-[28px] border border-[color:var(--border)] bg-[color:var(--panel)] p-6 shadow-[0_24px_80px_rgba(82,57,23,0.08)] ${
-        isPage ? "w-full" : ""
+        isPage ? "w-full" : "xl:sticky xl:top-6"
       }`}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--accent)]">Preferences</p>
           <h2 className="mt-3 text-2xl font-semibold">{isPage ? "Briefing settings" : "Tune the agent"}</h2>
+          <p className="mt-2 text-sm leading-6 text-stone-600">
+            {isPage ? "Shape the voice, topic mix, and weighting logic behind your briefing." : "Adjust the signal mix behind what rises to the top."}
+          </p>
           <p className="mt-2 text-sm text-stone-600">{message}</p>
         </div>
         <div className="rounded-full bg-white/80 px-3 py-2 text-xs font-medium text-stone-600">
@@ -254,7 +257,7 @@ export function Sidebar({ preferences, openAiKeyAvailable = false, variant = "co
         type="button"
         onClick={save}
         disabled={pending}
-        className="mt-6 w-full rounded-full bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-6 w-full rounded-full bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_32px_rgba(192,86,33,0.2)] hover:-translate-y-0.5 hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Saving..." : "Save preferences"}
       </button>
