@@ -6,9 +6,10 @@ Use this when moving `news-feed-agent` from local internal use to a hosted inter
 
 - Provision a Postgres database.
 - Set `DATABASE_URL` to the hosted Postgres connection string.
+- Run `npm run db:generate:postgres`.
+- Run `npm run db:migrate:postgres`.
+- Run `npm run db:seed:postgres`.
 - Confirm `npm run deploy:check` no longer reports the SQLite blocker.
-- Apply Prisma migrations to the hosted database.
-- Seed the internal user record.
 
 ## 2. App secrets
 

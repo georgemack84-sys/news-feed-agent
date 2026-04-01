@@ -73,6 +73,13 @@ npm run db:switch:postgres
 ```
 
 That updates `.env` with the default local Postgres connection string and saves the previous SQLite config to `.env.sqlite.backup`.
+After switching, run:
+
+```bash
+npm run db:generate:postgres
+npm run db:migrate:postgres
+npm run db:seed:postgres
+```
 
 Notes:
 
