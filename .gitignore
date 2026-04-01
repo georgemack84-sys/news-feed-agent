@@ -10,3 +10,5 @@ refresh.err.log
 gh_*.msi
 gh_*.zip
 tools/
+.vercel
+.neon
